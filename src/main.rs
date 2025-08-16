@@ -78,7 +78,7 @@ async fn main() -> Result<()> {
     // Collection URL prompt (no unwrap)
     let collection_url: String =
         Text::new("What is the URL (or ID) of the collection you are trying to download?")
-            .with_default("GQN7NShn")
+            .with_default("XXXXXX")
             .prompt()
             .map_err(|e| anyhow::anyhow!("Collection prompt failed: {e}"))?;
 
