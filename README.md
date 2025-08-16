@@ -6,7 +6,7 @@ This tool is used to download all mods from a Modrinth collection programaticall
 
 ## Usage 🛠️
 
-Just run the executable from [releases]("https://github.com/kay-xr/modrinth_collection_downloader/releases), and follow the prompts. 
+Just run the executable from [releases]("https://github.com/kay-xr/modrinth-collection-downloader/releases), and follow the prompts. 
 
 ## Compatibility Warnings ⚠️
 
