@@ -805,7 +805,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "modrinth_collection_downloader"
+name = "modrinth-collection-downloader"
 version = "0.1.0"
 dependencies = [
  "anyhow",

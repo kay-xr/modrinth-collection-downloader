@@ -1,5 +1,5 @@
 [package]
-name = "modrinth_collection_downloader"
+name = "modrinth-collection-downloader"
 version = "0.1.0"
 edition = "2024"
 license = "GPL-3"
