@@ -1,12 +1,12 @@
 // Basic packwiz creation, gets you started at least.
 
+use crate::modrinth::ModrinthProject;
 use anyhow::{Context, Result};
 use std::path::PathBuf;
 use std::process::Stdio;
 use tokio::fs;
 use tokio::io::BufReader;
 use tokio::process::Command;
-use crate::modrinth::ModrinthProject;
 
 #[cfg(target_os = "windows")]
 const BIN_NAME: &str = "packwiz.exe";
@@ -83,11 +83,7 @@ pub async fn init_packwiz(mut dir: PathBuf) -> Result<()> {
     }
 
     // verify it runs
-    let ok = Command::new(&out_path)
-        .arg("-h")
-        .status()
-        .await?
-        .success();
+    let ok = Command::new(&out_path).arg("-h").status().await?.success();
     anyhow::ensure!(ok, "downloaded packwiz failed to run");
 
     // cleanup zip

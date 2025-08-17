@@ -8,13 +8,13 @@ use crate::log::create_log_file;
 use crate::modrinth::{
     check_modrinth_status, get_collection_details, get_mod_links, log_project_name,
 };
+use crate::packwiz::{create_pack, init_packwiz};
 use anyhow::{Context, Result};
 use colored::Colorize;
 use inquire::validator::Validation;
 use inquire::{Select, Text};
 use regex::Regex;
 use tokio::fs;
-use crate::packwiz::{create_pack, init_packwiz};
 
 pub const MODRINTH_URL: &str = "https://api.modrinth.com/";
 pub const MODRINTH_STAGING_URL: &str = "https://staging-api.modrinth.com/";
@@ -109,14 +109,11 @@ async fn main() -> Result<()> {
     {
         let selection_options = vec!["Yes", "No"];
         let download_ans: &str = Select::new(
-            &format!(
-                "Would you like to download {} mods?",
-                links.len()
-            ),
+            &format!("Would you like to download {} mods?", links.len()),
             selection_options,
         )
-            .prompt()
-            .map_err(|e| anyhow::anyhow!("Download selection failed: {e}"))?;
+        .prompt()
+        .map_err(|e| anyhow::anyhow!("Download selection failed: {e}"))?;
 
         match download_ans {
             "Yes" => {

@@ -19,3 +19,8 @@ This tool also assumes every mod will contain the version supplied. If a project
 ## Modrinth API Notes 📝
 
 The public Modrinth API only allows for 300 requests-per-minute. This should be enough when downloading a decently-sized list of mods, but requests are throttled and may take extra time. 
+
+## Packwiz Notes
+[Packwiz](https://github.com/packwiz/packwiz) is an extremely useful tool for creating modpacks with the command-line. This tool utilizes Packwiz to create .mrpack files that can be used in the Modrinth launcher or Prism Launcher. 
+
+In order to run Packwiz, the tool will first check if Packwiz is installed on your system's PATH. If not, it will download the binary from the Packwiz repo. To skip the download, either have Packwiz on the path, or drop the executable (`packwiz.exe` or `packwiz`) in a `./packwiz` directory next to the executable.
