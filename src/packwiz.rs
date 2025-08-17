@@ -148,7 +148,7 @@ pub async fn create_pack(mut dir: PathBuf, list: Vec<ModrinthProject>) -> Result
 
 async fn command_works(cmd: &str) -> bool {
     Command::new(cmd)
-        .arg("--version")
+        .arg("-h")
         .status()
         .await
         .map(|s| s.success())
