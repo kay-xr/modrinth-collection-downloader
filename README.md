@@ -4,11 +4,11 @@
 
 This tool is used to download all mods from a Modrinth collection programatically. I built it for my own personal use but figured it was useful.
 
-The tool can also create .mrpack files using packwiz, for use in launchers like the Modrinth App or Prism Launcher.
+The tool can also create .mrpack files using [packwiz](https://github.com/packwiz/packwiz), for use in launchers like the Modrinth App or Prism Launcher.
 
 ## Usage 🛠️
 
-Just run the executable from [releases]("https://github.com/kay-xr/modrinth-collection-downloader/releases), and follow the prompts. 
+Just run the executable from [releases](https://github.com/kay-xr/modrinth-collection-downloader/releases), and follow the prompts. 
 
 ## Compatibility Warnings ⚠️
 
