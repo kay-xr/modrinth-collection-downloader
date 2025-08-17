@@ -4,6 +4,8 @@
 
 This tool is used to download all mods from a Modrinth collection programatically. I built it for my own personal use but figured it was useful.
 
+The tool can also create .mrpack files using packwiz, for use in launchers like the Modrinth App or Prism Launcher.
+
 ## Usage 🛠️
 
 Just run the executable from [releases]("https://github.com/kay-xr/modrinth-collection-downloader/releases), and follow the prompts. 
@@ -16,4 +18,4 @@ This tool also assumes every mod will contain the version supplied. If a project
 
 ## Modrinth API Notes 📝
 
-The public Modrinth API only allows for 300 requests-per-minute. This should be enough when downloading a large list of mods, but downloads are throttled and may take extra time. 
+The public Modrinth API only allows for 300 requests-per-minute. This should be enough when downloading a decently-sized list of mods, but requests are throttled and may take extra time. 

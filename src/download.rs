@@ -1,3 +1,4 @@
+use crate::modrinth::ModrinthProject;
 use anyhow::Result;
 use futures::stream::{FuturesUnordered, StreamExt};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
@@ -10,7 +11,10 @@ use tokio::io::AsyncWriteExt;
 use tokio::sync::Semaphore;
 
 /// Download up to 8 files at a time
-pub async fn download_files(urls: Vec<String>, dest_dir: impl AsRef<Path>) -> Result<Vec<PathBuf>> {
+pub async fn download_files(
+    urls: Vec<ModrinthProject>,
+    dest_dir: impl AsRef<Path>,
+) -> Result<Vec<PathBuf>> {
     const CONCURRENCY: usize = 8;
 
     let dest_dir = dest_dir.as_ref().to_path_buf();
@@ -31,7 +35,7 @@ pub async fn download_files(urls: Vec<String>, dest_dir: impl AsRef<Path>) -> Re
         tasks.push(tokio::spawn(async move {
             let _permit = sem.acquire().await.unwrap();
 
-            let url_parsed = Url::parse(&url)?;
+            let url_parsed = Url::parse(&url.download_link)?;
             let resp = client
                 .get(url_parsed.clone())
                 .header(
@@ -56,7 +60,6 @@ pub async fn download_files(urls: Vec<String>, dest_dir: impl AsRef<Path>) -> Re
                 ProgressStyle::with_template(
                     "{spinner:.green} {msg:.dim} {bytes:>10}/{total_bytes:10} ({eta})\n{bar:40.cyan/blue}",
                 )?
-                    .progress_chars("##-"),
             );
             pb.set_message(filename.clone());
 

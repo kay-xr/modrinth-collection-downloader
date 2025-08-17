@@ -1,7 +1,10 @@
 mod download;
+mod log;
 mod modrinth;
+mod packwiz;
 
 use crate::download::download_files;
+use crate::log::create_log_file;
 use crate::modrinth::{
     check_modrinth_status, get_collection_details, get_mod_links, log_project_name,
 };
@@ -11,6 +14,7 @@ use inquire::validator::Validation;
 use inquire::{Select, Text};
 use regex::Regex;
 use tokio::fs;
+use crate::packwiz::{create_pack, init_packwiz};
 
 pub const MODRINTH_URL: &str = "https://api.modrinth.com/";
 pub const MODRINTH_STAGING_URL: &str = "https://staging-api.modrinth.com/";
@@ -101,25 +105,65 @@ async fn main() -> Result<()> {
     let (links, failed) =
         get_mod_links(collection.projects, mod_platform, minecraft_version).await?;
 
-    download_files(links, dir).await?;
-
-    if failed.len() > 0 {
+    // Downloader
+    {
         let selection_options = vec!["Yes", "No"];
-        let platform_ans: &str = Select::new(
+        let download_ans: &str = Select::new(
             &format!(
-                "Failed to get versions for {} files, would you like to see their names?",
-                failed.len()
+                "Would you like to download {} mods?",
+                links.len()
             ),
             selection_options,
         )
-        .prompt()
-        .map_err(|e| anyhow::anyhow!("Platform selection failed: {e}"))?;
+            .prompt()
+            .map_err(|e| anyhow::anyhow!("Download selection failed: {e}"))?;
+
+        match download_ans {
+            "Yes" => {
+                download_files(links.clone(), dir.clone()).await?;
+                create_log_file(links.clone(), failed.clone(), dir.parse()?).await?;
+            }
+            _ => {}
+        };
+
+        // Failed file logging
+        if failed.len() > 0 {
+            let selection_options = vec!["Yes", "No"];
+            let failed_ans: &str = Select::new(
+                &format!(
+                    "Failed to get versions for {} files, would you like to see their names and relevant links?",
+                    failed.len()
+                ),
+                selection_options,
+            )
+                .prompt()
+                .map_err(|e| anyhow::anyhow!("Selection failed: {e}"))?;
+
+            match failed_ans {
+                "Yes" => {
+                    for failed_file in failed {
+                        log_project_name(failed_file).await?;
+                    }
+                }
+                _ => {}
+            };
+        }
+    }
+
+    // Packwiz addon
+    {
+        let selection_options = vec!["Yes", "No"];
+        let platform_ans: &str = Select::new(
+            "Would you like to build a packwiz pack? This requires packwiz to either be installed in your path, or we will download it for you.",
+            selection_options,
+        )
+            .prompt()
+            .map_err(|e| anyhow::anyhow!("Platform selection failed: {e}"))?;
 
         match platform_ans {
             "Yes" => {
-                for failed_file in failed {
-                    log_project_name(failed_file).await?;
-                }
+                init_packwiz(dir.clone().parse()?).await?;
+                create_pack(dir.parse()?, links.clone()).await?;
             }
             _ => {}
         };

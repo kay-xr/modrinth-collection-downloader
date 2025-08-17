@@ -3,7 +3,7 @@ use anyhow::{Result, anyhow};
 use colored::Colorize;
 use reqwest::Client;
 use reqwest::header::USER_AGENT;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Check the status of the Modrinth API
 pub async fn check_modrinth_status() -> Result<()> {
@@ -60,8 +60,8 @@ pub async fn get_mod_links(
     mod_ids: Vec<String>,
     loader: String,
     version: String,
-) -> Result<(Vec<String>, Vec<String>)> {
-    let mut links: Vec<String> = vec![];
+) -> Result<(Vec<ModrinthProject>, Vec<String>)> {
+    let mut links: Vec<ModrinthProject> = vec![];
     let mut failed_downloads: Vec<String> = vec![];
 
     let client = Client::new();
@@ -106,7 +106,14 @@ pub async fn get_mod_links(
                     .find(|f| f.primary)
                     .or_else(|| ver.files.first())
                 {
-                    links.push(file.url.clone());
+                    let proj: ModrinthProject = ModrinthProject {
+                        id: mod_id,
+                        name: file.filename.clone(),
+                        download_link: file.url.clone(),
+                    };
+
+                    links.push(proj);
+                    // links.push(file.url.clone());
                 } else {
                     failed_downloads.push(mod_id);
                 }
@@ -135,7 +142,10 @@ pub async fn log_project_name(mod_id: String) -> Result<()> {
     if resp.status().is_success() {
         let collection: Project = resp.json().await?;
 
-        println!("{}", collection.title);
+        println!(
+            "{}, https://modrinth.com/mod/{}",
+            collection.title, collection.slug
+        );
 
         Ok(())
     } else {
@@ -232,4 +242,14 @@ pub struct Dependency {
 pub struct Project {
     pub id: String,
     pub title: String,
+    pub slug: String,
+}
+
+/// Container for Mod details
+#[allow(dead_code)]
+#[derive(Deserialize, Serialize, Clone)]
+pub struct ModrinthProject {
+    pub id: String,
+    pub name: String,
+    pub download_link: String,
 }
